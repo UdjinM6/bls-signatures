@@ -31,17 +31,11 @@ G1Element G1Element::FromBytes(const Bytes& bytes, bool fLegacy)
     uint8_t buffer[G1Element::SIZE + 1];
     std::memcpy(buffer + 1, bytes.begin(), G1Element::SIZE);
 
+    bool fZerosOnly = Util::HasOnlyZeros(Bytes(buffer, G1Element::SIZE + 1));
     if ((bytes[0] & 0xc0) == 0xc0) {  // representing infinity
         // enforce that infinity must be 0xc0000..00
-        if (bytes[0] != 0xc0) {
-            throw std::invalid_argument(
-                "Given G1 infinity element must be canonical");
-        }
-        for (int i = 1; i < G1Element::SIZE; ++i) {
-            if (bytes[i] != 0x00) {
-                throw std::invalid_argument(
-                    "Given G1 infinity element must be canonical");
-            }
+        if (bytes[0] != 0xc0 || !fZerosOnly) {
+            throw std::invalid_argument("Given G1 infinity element must be canonical");
         }
         return ele;
     } else {
@@ -59,6 +53,10 @@ G1Element G1Element::FromBytes(const Bytes& bytes, bool fLegacy)
             if ((bytes[0] & 0xc0) != 0x80) {
                 throw std::invalid_argument(
                         "Given G1 non-infinity element must start with 0b10");
+            }
+
+            if (fZerosOnly) {
+               throw std::invalid_argument("G1 non-infinity element can't have only zeros");
             }
 
             if (bytes[0] & 0x20) {  // sign bit
@@ -237,17 +235,12 @@ G2Element G2Element::FromBytes(const Bytes& bytes, const bool fLegacy)
                     "Given G2 element must always have 48th byte start with 0b000");
         }
     }
+    bool fZerosOnly = Util::HasOnlyZeros(Bytes(buffer, G2Element::SIZE + 1));
     if (((bytes[0] & 0xc0) == 0xc0)) {  // infinity
         // enforce that infinity must be 0xc0000..00
-        if (bytes[0] != 0xc0) {
+        if (bytes[0] != 0xc0 || !fZerosOnly) {
             throw std::invalid_argument(
                 "Given G2 infinity element must be canonical");
-        }
-        for (int i = 1; i < G2Element::SIZE; ++i) {
-            if (bytes[i] != 0x00) {
-                throw std::invalid_argument(
-                    "Given G2 infinity element must be canonical");
-            }
         }
         return ele;
     }
@@ -264,6 +257,11 @@ G2Element G2Element::FromBytes(const Bytes& bytes, const bool fLegacy)
             throw std::invalid_argument(
                 "G2 non-inf element must have 0th byte start with 0b10");
         }
+
+        if (fZerosOnly) {
+            throw std::invalid_argument("G2 non-infinity element can't have only zeros");
+        }
+
         if (bytes[0] & 0x20) {
             buffer[0] = 0x03;
         } else {
