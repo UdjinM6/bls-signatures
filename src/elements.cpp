@@ -19,6 +19,8 @@
 
 namespace bls {
 
+const size_t G1Element::SIZE;
+
 G1Element G1Element::FromBytes(const Bytes& bytes, bool fLegacy)
 {
     if (bytes.size() != SIZE) {
@@ -214,7 +216,9 @@ G1Element operator*(const bn_t& k, const G1Element& a) { return a * k; }
 
 
 
-G2Element G2Element::FromBytes(const Bytes& bytes, const bool fLegacy)
+const size_t G2Element::SIZE;
+
+G2Element G2Element::FromBytes(const Bytes& bytes, bool fLegacy)
 {
     if (bytes.size() != SIZE) {
         throw std::invalid_argument("G2Element::FromBytes: Invalid size");
@@ -428,6 +432,8 @@ G2Element operator*(const bn_t& k, const G2Element& a) { return a * k; }
 
 
 // GTElement
+
+const size_t GTElement::SIZE;
 
 GTElement GTElement::FromBytes(const Bytes& bytes)
 {
