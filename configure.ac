@@ -161,30 +161,30 @@ AC_ARG_WITH([backend],
 )
 
 if test x"$want_backend" = x"auto"; then
-if test x"$use_optimizations" = x"no"; then
-  want_backend=easy
-else
-  GMP_CHECK
-  if test x"$has_gmp" = x"yes"; then
-    case $host in
-      *darwin*)
-        case $host_cpu in
-          aarch*)
-            want_backend=easy
-            ;;
-          *)
-            want_backend=gmp
-            ;;
-        esac
-        ;;
-      *)
-        want_backend=gmp
-        ;;
-    esac
-  else
+  if test x"$use_optimizations" = x"no"; then
     want_backend=easy
+  else
+    GMP_CHECK
+    if test x"$has_gmp" = x"yes"; then
+      case $host in
+        *darwin*)
+          case $host_cpu in
+            aarch*)
+              want_backend=easy
+              ;;
+            *)
+              want_backend=gmp
+              ;;
+          esac
+          ;;
+        *)
+          want_backend=gmp
+          ;;
+      esac
+    else
+      want_backend=easy
+    fi
   fi
-fi
 else
   case $want_backend in
   gmp)
@@ -820,3 +820,19 @@ AC_OUTPUT
 dnl Peplace conflict-prone PACKAGE-prefixed macros with DASHBLS
 sed -i.old 's/PACKAGE/DASHBLS/g' depends/relic/include/relic_conf.h
 sed -i.old 's/PACKAGE/DASHBLS/g' config.status
+
+echo
+echo "Options used to compile and link:"
+echo "  target os           = $TARGET_OS"
+echo "  backend             = $want_backend"
+echo "  build bench         = $BUILD_BENCH"
+echo "  build test          = $BUILD_TEST"
+echo "  use debug           = $use_debug"
+echo "  use hardening       = $use_hardening"
+echo "  use optimizations   = $use_optimizations"
+echo
+echo "  LDFLAGS             = $HARDENED_LDFLAGS $CORE_LDFLAGS $GMP_LDFLAGS"
+echo "  CFLAGS              = $DEBUG_FLAGS $HARDENED_FLAGS"
+echo "  CPPFLAGS            = $CORE_CPPFLAGS $GMP_CPPFLAGS"
+echo "  CXXFLAGS            = $DEBUG_FLAGS $HARDENED_FLAGS $CORE_CXXFLAGS"
+echo
