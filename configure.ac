@@ -189,7 +189,9 @@ if test x"$has_gmp" != x"yes"; then
             @%:@error Unsupported GMP version
           @%:@endif]])],
       [AC_MSG_RESULT([yes]); has_gmp=yes; GMP_LIBS="-lgmp";],
-      [AC_MSG_RESULT([no]); AC_MSG_ERROR([unsupported gmp version])]
+      [AC_MSG_RESULT([no]);
+        AS_IF([test x"$want_backend" = x"gmp"], [AC_MSG_ERROR([unsupported gmp version])], [has_gmp=no])
+      ]
     )
   fi
 
