@@ -158,8 +158,14 @@ if test x"$has_gmp" != x"yes"; then
 
   AC_CHECK_HEADER(
     gmp.h,
-    [AC_CHECK_LIB(gmp, __gmpz_init, [], [AC_MSG_ERROR([libgmp not found or unusable])])],
-    [has_gmp=no]
+    [AC_CHECK_LIB(gmp, __gmpz_init,
+      [],
+      [AS_IF([test x"$want_backend" = x"gmp"],
+        [AC_MSG_ERROR([libgmp not found or unusable])],
+        [has_gmp=no]
+      )]
+    )],
+    [AS_IF([test x"$want_backend" = x"gmp"], [AC_MSG_ERROR([gmp header not found])], [has_gmp=no])]
   )
 
   if test x"$has_gmp" != x"no"; then
