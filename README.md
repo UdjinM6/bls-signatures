@@ -72,6 +72,12 @@ at [`binds/python/samples`](binds/python/samples).
 * [`pytest`](https://github.com/pytest-dev/pytest) (benchmarks and unit tests, part of optional `[dev]` dependency group)
 * [`ruff`](https://github.com/astral-sh/ruff) (linting, part of optional `[dev]` dependency group)
 
+> [!IMPORTANT]
+> The binds are not yet API-complete. Most notably the legacy (pre-v19) scheme
+> is not reachable from Python: `fLegacy` is not exposed on `from_message`,
+> `from_bytes`, `serialize` or `get_fingerprint`, so the binds can only act as
+> an oracle for the IETF-conformant scheme.
+
 > [!NOTE]
 > We recommend using programs like [`uv`](https://github.com/astral-sh/uv) to manage your virtualenv (`venv`) to prevent
 > cross-contamination with Python-based native packages or other Python projects.

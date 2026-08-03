@@ -4,5 +4,5 @@
     "editor.formatOnSave": true,
     "editor.rulers": [88, 100]
   },
-  "editor.minimap.enabled": true,
+  "editor.minimap.enabled": true
 }

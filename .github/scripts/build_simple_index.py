@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# coding: latin-1
 
 #
 # Copyright (c) 2026-present, Microsoft Corporation
@@ -69,11 +68,17 @@ def main() -> None:
     # Sdists matter as much as wheels here: they are the only thing installable
     # on a platform we do not ship a wheel for, and pip will not find one that
     # the index does not list.
+    # A release carries assets for the other binds too, so match on the project
+    # name as well rather than trusting the extension alone.
     files = []
     for release in releases(args.repo):
         for asset in release["assets"]:
-            if asset["name"].endswith((".whl", ".tar.gz")):
-                files.append((asset["name"], asset["url"], asset.get("digest")))
+            name = asset["name"]
+            if not name.endswith((".whl", ".tar.gz")):
+                continue
+            if re.sub(r"[-_.]+", "-", name.split("-")[0]).lower() != NORMALISED:
+                continue
+            files.append((name, asset["url"], asset.get("digest")))
     files.sort()
     if not files:
         sys.exit("no distributions found on any release; refusing to publish an empty index")

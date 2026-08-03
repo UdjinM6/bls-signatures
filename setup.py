@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# coding: latin-1
 
 #
 # Copyright (c) 2020-present, Chia Network Inc.
